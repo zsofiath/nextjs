@@ -13,10 +13,10 @@ function HomePage (props) {
  * Ez kell legyen a neve
  * Megvárja a datát
  */
-export async function getStaticProps(){
+/*export async function getStaticProps(){
     // ide jöhet a BE kód
     // ez nem megy le a klienshez
-    /**Ét tényleg a BE-n fut, ahol x időként (revalidate) lefut, és generálja a leküldendő html-t*/
+    // Ét tényleg a BE-n fut, ahol x időként (revalidate) lefut, és generálja a leküldendő html-t
     const p =  await new Promise((res, rej) => {
         setTimeout(() => {
             res()
@@ -36,6 +36,28 @@ let i = 2
             meetups: dummy
         },
         revalidate: 10 //mindig generálja az oldalt - incremental static generation
+    }
+}*/
+
+/**
+ * On server after deployment
+ * for every incoming request it will run
+ */
+export async function getServerSideProps(context){
+    const req = context.req;
+    const res = context.res;
+
+    const p =  await new Promise((res, rej) => {
+        setTimeout(() => {
+            res()
+        }, 5000);
+    })
+
+    return {
+        props:{
+            meetups: dummy
+        },
+
     }
 }
 export default HomePage
