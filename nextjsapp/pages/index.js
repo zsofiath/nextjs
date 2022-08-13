@@ -1,11 +1,16 @@
 import MeetupList from '../components/meetups/MeetupList'
+import Head from 'next/head'
 /**
  * It is soo smart that it does not includes the imports into the client boundle if it is used only at the backend
  */
 import {MongoClient} from 'mongodb'
 
 function HomePage (props) {
-    return <MeetupList meetups={props.meetups}></MeetupList>
+    return <>
+    <Head>
+        <title>React meetups</title>
+    </Head>
+    <MeetupList meetups={props.meetups}></MeetupList></>
 }
 /**
  * SSG - STATIC SITE GENERATION
