@@ -1,10 +1,9 @@
 import MeetupList from '../components/meetups/MeetupList'
-const dummy = [
-    {id: 'm1',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/DandelionFlower.jpg/330px-DandelionFlower.jpg',
-        title: 'Jaskier',
-        address: 'Sintra'}
-]
+/**
+ * It is soo smart that it does not includes the imports into the client boundle if it is used only at the backend
+ */
+import {MongoClient} from 'mongodb'
+
 function HomePage (props) {
     return <MeetupList meetups={props.meetups}></MeetupList>
 }
@@ -20,12 +19,25 @@ export async function getStaticProps(){
     // Ét tényleg a BE-n fut, ahol x időként (revalidate) lefut, és generálja a leküldendő html-t
 
 
+    const client = await MongoClient.connect('mongodb+srv://user1:12345@cluster0.3y9jmye.mongodb.net/meetups?retryWrites=true&w=majority')
+    const db = client.db()
+    const meetupColections = db.collection('meetups')
+    const meetups = await meetupColections.find().toArray()
+    client.close()
+
+console.log(meetups);
     // mindig obj-t kell visszaadjon
     return {
         props: {
-            meetups: dummy
+            meetups: meetups.map(meetup =>({
+                title: meetup.data.title,
+                image: meetup.data.image,
+                id: meetup._id.toString(),
+                address: meetup.data.address,
+                description: meetup.data.description
+            }))
         },
-        revalidate: 10 //mindig generálja az oldalt - incremental static generation
+        revalidate: 1 //mindig generálja az oldalt - incremental static generation
     }
 }
 
