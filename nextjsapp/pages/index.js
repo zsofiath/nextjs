@@ -9,20 +9,18 @@ function HomePage (props) {
     return <MeetupList meetups={props.meetups}></MeetupList>
 }
 /**
+ * SSG - STATIC SITE GENERATION
  * Csak a pages folderben használható
  * Ez kell legyen a neve
  * Megvárja a datát
  */
-
-
-
-
 export async function getStaticProps(){
     // ide jöhet a BE kód
     // ez nem megy le a klienshez
     // Ét tényleg a BE-n fut, ahol x időként (revalidate) lefut, és generálja a leküldendő html-t
 
 
+    // mindig obj-t kell visszaadjon
     return {
         props: {
             meetups: dummy
