@@ -13,7 +13,6 @@ function newMeetupPage (){
         })
 
         const data = await response.json()
-        console.log(data);
         router.replace('/')
     }
     return <NewMeetupForm onAddMeetup={addMeetupHandler}></NewMeetupForm>

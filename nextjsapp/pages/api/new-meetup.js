@@ -12,7 +12,6 @@ import {MongoClient} from 'mongodb'
         const db = client.db()
         const meetupColections = db.collection('meetups')
         const result = await meetupColections.insertOne({data})
-        console.log(result);
 
         client.close()
         res.status(201).json({message: 'Meetup inserted!'})

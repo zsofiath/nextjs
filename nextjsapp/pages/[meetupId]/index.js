@@ -1,8 +1,10 @@
+import {MongoClient, ObjectId} from 'mongodb'
 
-function MeetupDetails () {
+
+function MeetupDetails ({meetupData}) {
     return <>
     {/* <image src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/DandelionFlower.jpg/330px-DandelionFlower.jpg' alt=''/> */}
-    <h1>Meet</h1>
+    <h1>{meetupData.title}</h1>
     <address>Street</address>
     <p>Descr</p>
     </>
@@ -11,16 +13,17 @@ function MeetupDetails () {
 /**Dynamic page && getSteticProps  -> getStaticPats is required*/
 
 export async function getStaticPaths() {
+    const client = await MongoClient.connect('mongodb+srv://user1:12345@cluster0.3y9jmye.mongodb.net/meetups?retryWrites=true&w=majority')
+    const db = client.db()
+    const meetupColections = db.collection('meetups')
+    const meetups = await meetupColections.find({}, {_id: 1}).toArray()
+    client.close()
+
     return {
         fallback: false, // ha nem talált routre megy, akkor 404 vagy generálja le gyorsan
-        paths: [
-            {params: {
-                meetupId: 'm1'
-            }},
-            {params: {
-                meetupId: 'm2'
-            }}
-        ]
+        paths: meetups.map(meetup =>({params: {
+            meetupId: meetup._id.toString()
+        }}))
     }
 }
 
@@ -30,19 +33,16 @@ export async function getStaticProps(context){
     // Ét tényleg a BE-n fut, ahol x időként (revalidate) lefut, és generálja a leküldendő html-t
 
 const meetupId = context.params.meetupId;
-console.log(meetupId);
-
+const client = await MongoClient.connect('mongodb+srv://user1:12345@cluster0.3y9jmye.mongodb.net/meetups?retryWrites=true&w=majority')
+const db = client.db()
+const meetupColections = db.collection('meetups')
+const selectedMeetup = await meetupColections.findOne({_id: ObjectId(meetupId)}) // string is not good, so we convert it into a mongodb id
+client.close()
     return {
         props: {
-            meetupData: {
-                image: '',
-                id:meetupId,
-                title:'first',
-                address:'iopjoijoi',
-                description:'uiiu'
-            }
+            meetupData: {...selectedMeetup.data, id: selectedMeetup._id.toString(), _id:''}
         },
-        revalidate: 10 //mindig generálja az oldalt - incremental static generation
+        revalidate: 1 //mindig generálja az oldalt - incremental static generation
     }
 }
 

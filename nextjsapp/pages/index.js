@@ -25,7 +25,6 @@ export async function getStaticProps(){
     const meetups = await meetupColections.find().toArray()
     client.close()
 
-console.log(meetups);
     // mindig obj-t kell visszaadjon
     return {
         props: {
