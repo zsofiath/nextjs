@@ -34,7 +34,13 @@ console.log(meetupId);
 
     return {
         props: {
-            meetups: {}
+            meetupData: {
+                image: '',
+                id:meetupId,
+                title:'first',
+                address:'iopjoijoi',
+                description:'uiiu'
+            }
         },
         revalidate: 10 //mindig generálja az oldalt - incremental static generation
     }
