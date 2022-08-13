@@ -4,7 +4,7 @@ import {MongoClient} from 'mongodb'
 
 // post: api/new-meetup
 
- async function handler (res, req) {
+ async function handler (req, res) {
     if(req.method == 'POST') {
         const data = req.body
 
